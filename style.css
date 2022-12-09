@@ -2,13 +2,15 @@ html {
   display: flex;
   justify-content: center;
   align-items: center;
+  color: #333333;
 }
+
 .todo__container {
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 10px;
-  max-width: 500px;
+  width: 400px;
 }
 
 .todo__form {
@@ -22,10 +24,16 @@ html {
   display: flex;
   flex-direction: column;
   align-items: stretch;
-  min-width: 300px;
+  min-width: 400px;
   border: 1px solid black;
   border-radius: 5px;
   padding: 10px;
+}
+
+.todo__list-container h2 {
+  justify-content: center;
+  text-align: center;
+  align-items: center;
 }
 
 .todo {
@@ -39,15 +47,122 @@ html {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  border: 1px solid black;
+  border: none;
   border-radius: 5px;
-  padding:5px
+  padding:5px;
+  background-color: #e6e2d3;
 }
 
 .todo span {
   flex-grow: 1;
   display: flex;
   justify-content: center;
+  padding: 5px;
   align-items: center;
   height: 30px;
+  color: black;
 }
+
+.todo span:hover {
+  cursor: pointer;
+  color: #5a5a5a;
+}
+
+.input--edit {
+  flex-grow: 1;
+  display: flex;
+  padding: 10px;
+  margin-right: 5px;
+  border-radius: 5px;
+  border: none;
+  outline: none;
+}
+
+.input--edit:focus {
+  border: 1px solid #555;
+}
+
+.input {
+  display: flex;
+  padding: 10px;
+  border-radius: 5px;
+  border: 1px solid grey;
+  width: 200px;
+  transition: 0.5s;
+  outline: none;
+}
+
+.input:focus {
+  border: 1px solid black;
+}
+
+.todo h3 {
+  justify-content: center;
+  text-align: center;
+  align-items: center;
+}
+
+.btn--edit {
+  height: 40px;
+  width: 60px;
+  border-radius: 5px;
+  border: none;
+  padding: 5px;
+  margin-right: 5px;
+  color: white;
+  background-color: #008cba;
+}
+
+.btn--edit:hover {
+  background-color: #63c5da;
+}
+
+.btn--delete {
+  height: 40px;
+  width: 60px;
+  border-radius: 5px;
+  border: none;
+  padding: 5px;
+  margin-right: 5px;
+  color: white;
+  background-color: #c94c4c;
+}
+
+.btn--delete:hover {
+  background-color: #ff5c5c;
+}
+
+.btn--edit2 {
+  height: 40px;
+  width: 60px;
+  border-radius: 5px;
+  border: none;
+  padding: 5px;
+  margin-right: 5px;
+  color: white;
+  background-color: #008cba;
+}
+
+.btn--edit2:hover {
+  background-color: #63c5da;
+}
+
+.btn {
+  height: 40px;
+  width: 60px;
+  border-radius: 5px;
+  border: none;
+  padding: 5px;
+  margin-right: 5px;
+  color: white;
+  background-color: #008cba;
+}
+
+.btn:hover {
+  background-color: #63c5da;
+}
+
+button:hover {
+  cursor: pointer;
+}
+

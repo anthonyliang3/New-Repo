@@ -114,19 +114,28 @@ const View = (() => {
         todos.sort((a,b)=>b.id-a.id).map((todo) => {
             if (todo.completed === false) {
                 template += `
-                    <li id="task${todo.id}"><span class="span--content" id="${todo.id}">${todo.content}</span><button class="btn--edit" id="${todo.id}">Edit</button><button class="btn--delete" id="${todo.id}">Delete</button></li>
+                    <li id="task${todo.id}">
+                    <span class="span--content" id="${todo.id}">${todo.content}</span>
+                    <button class="btn--edit" id="${todo.id}">
+                    Edit
+                    </button>
+                    <button class="btn--delete" id="${todo.id}">Delete</button>
+                    </li>
                 `
             } else {
                 completed += `
-                    <li id="task${todo.id}"><span class="span--content" id="${todo.id}">${todo.content}</span><button class="btn--delete" id="${todo.id}">Delete</button></li>
+                    <li id="task${todo.id}">
+                    <span class="span--content" id="${todo.id}"><strike>${todo.content}</strike></span>
+                    <button class="btn--delete" id="${todo.id}">Delete</button>
+                    </li>
                 `
             }
         })
         if (template.length === 0) {
-            template = "<h3>No active tasks</h3>";
+            template = "<h3><i>No active tasks</i></h3>";
         }
         if (completed.length === 0) {
-            completed = "<h3>No tasks completed</h3>";
+            completed = "<h3><i>No tasks completed</i></h3>";
         }
         todoListEl.innerHTML = template;
         completedEl.innerHTML = completed;
@@ -171,6 +180,18 @@ const ViewModel = ((Model, View) => {
                 });
             }
         })
+        View.completedEl.addEventListener("click", (event) => {
+            //console.log(event.currentTarget, event.target)
+            const { id } = event.target
+            if (event.target.className === "btn--delete") {
+                APIs.deleteTodo(id).then(res => {
+                    //console.log("Res", res);
+                    state.todos = state.todos.filter((todo) => {
+                        return +todo.id !== +id
+                    });
+                });
+            }
+        })
     }
 
     const editTodo = () => {
@@ -188,6 +209,7 @@ const ViewModel = ((Model, View) => {
                 //console.log(oldButton);
                 let input = document.createElement('input');
                 input.value = span.textContent;
+                input.className = "input--edit";
                 let newButton = document.createElement('button');
                 newButton.className = "btn--edit2";
                 newButton.textContent = 'Edit';
@@ -203,7 +225,7 @@ const ViewModel = ((Model, View) => {
                 }
                 APIs.editTodo(id, data)
                     .then(res => {
-                        console.log(res);
+                        //console.log(res);
                         state.todos = state.todos.map(todo => +todo.id === +id ? {...todo, "content": input.value} : todo);
                     })
             }
@@ -221,7 +243,7 @@ const ViewModel = ((Model, View) => {
                 }
                 APIs.completeTodo(id, data)
                     .then(res => {
-                        console.log(res);
+                        //console.log(res);
                         state.todos = state.todos.map(todo => +todo.id === +id ? {...todo, "completed": true} : todo);
                     })
             }
@@ -236,7 +258,7 @@ const ViewModel = ((Model, View) => {
                 }
                 APIs.completeTodo(id, data)
                     .then(res => {
-                        console.log(res);
+                        //console.log(res);
                         state.todos = state.todos.map(todo => +todo.id === +id ? {...todo, "completed": false} : todo);
                     })
             }
