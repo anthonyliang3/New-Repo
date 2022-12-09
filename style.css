@@ -28,14 +28,14 @@ html {
   padding: 10px;
 }
 
-.todo__list {
+.todo {
   padding: 0px;
   display: flex;
   flex-direction: column;
   gap: 10px;
 }
 
-.todo__list li {
+.todo li {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -44,7 +44,7 @@ html {
   padding:5px
 }
 
-.todo__list span {
+.todo span {
   flex-grow: 1;
   display: flex;
   justify-content: center;

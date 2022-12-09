@@ -16,7 +16,20 @@ const APIs = (() => {
 
     const editTodo = (id, data) => {
         return fetch(`${URL}/${id}`, {
-            method: "PUT",
+            method: "PATCH",
+            body: JSON.stringify(data),
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'applicaction/json'
+            }
+        }).then((res) => {
+            return res.json();
+        })
+    }
+
+    const completeTodo = (id, data) => {
+        return fetch(`${URL}/${id}`, {
+            method: "PATCH",
             body: JSON.stringify(data),
             headers: {
                 'Content-Type': 'application/json',
@@ -45,7 +58,8 @@ const APIs = (() => {
         getTodos,
         deleteTodo,
         addTodo,
-        editTodo
+        editTodo,
+        completeTodo
     }
 })()
 
@@ -93,22 +107,35 @@ const Model = (() => {
 const View = (() => {
     const formEl = document.querySelector(".todo__form");
     const todoListEl = document.querySelector(".todo__list");
+    const completedEl = document.querySelector(".todo__completed");
     const renderTodolist = (todos) => {
         let template = "";
-        todos.sort((a,b)=>b.id-a.id).forEach((todo) => {
-            template += `
-                <li id="task${todo.id}"><span>${todo.content}</span><button class="btn--edit" id="${todo.id}">Edit</button><button class="btn--delete" id="${todo.id}">Delete</button></li>
-            `
+        let completed = "";
+        todos.sort((a,b)=>b.id-a.id).map((todo) => {
+            if (todo.completed === false) {
+                template += `
+                    <li id="task${todo.id}"><span class="span--content" id="${todo.id}">${todo.content}</span><button class="btn--edit" id="${todo.id}">Edit</button><button class="btn--delete" id="${todo.id}">Delete</button></li>
+                `
+            } else {
+                completed += `
+                    <li id="task${todo.id}"><span class="span--content" id="${todo.id}">${todo.content}</span><button class="btn--delete" id="${todo.id}">Delete</button></li>
+                `
+            }
         })
         if (template.length === 0) {
-            template = "<h2>No active tasks</h2>";
+            template = "<h3>No active tasks</h3>";
+        }
+        if (completed.length === 0) {
+            completed = "<h3>No tasks completed</h3>";
         }
         todoListEl.innerHTML = template;
+        completedEl.innerHTML = completed;
     }
     return {
         formEl,
         renderTodolist,
-        todoListEl
+        todoListEl,
+        completedEl
     }
 })();
 
@@ -153,9 +180,7 @@ const ViewModel = ((Model, View) => {
             let parent = editButton.parentNode;
             //console.log(parent);
             const { id } = event.target;
-            console.log(id);
-            let currentState = state.todos.filter(todo => +todo.id === +id);
-            //console.log(currentState);
+            //console.log(id);
             if (event.target.className === "btn--edit") {
                 //const input = document.createElement('input');
                 let span = parent.firstElementChild;
@@ -175,7 +200,6 @@ const ViewModel = ((Model, View) => {
                 //console.log(input.value);
                 data = {
                     'content': input.value,
-                    'completed' : currentState[0].completed
                 }
                 APIs.editTodo(id, data)
                     .then(res => {
@@ -186,7 +210,39 @@ const ViewModel = ((Model, View) => {
         })
     }
 
-    const getTodos = ()=>{
+    const completeTodos = () => {
+        View.todoListEl.addEventListener("click", (event) => {
+            const { id } = event.target;
+            //console.log(event.target);
+            let currentState = state.todos.filter(todo => +todo.id === +id);
+            if (event.target.className === "span--content") {
+                data = {
+                    'completed': true
+                }
+                APIs.completeTodo(id, data)
+                    .then(res => {
+                        console.log(res);
+                        state.todos = state.todos.map(todo => +todo.id === +id ? {...todo, "completed": true} : todo);
+                    })
+            }
+        })
+        View.completedEl.addEventListener("click", (event) => {
+            const { id } = event.target;
+            //console.log(event.target);
+            let currentState = state.todos.filter(todo => +todo.id === +id);
+            if (event.target.className === "span--content") {
+                data = {
+                    'completed': false
+                }
+                APIs.completeTodo(id, data)
+                    .then(res => {
+                        console.log(res);
+                        state.todos = state.todos.map(todo => +todo.id === +id ? {...todo, "completed": false} : todo);
+                    })
+            }
+        })
+    }
+    const getTodos = () => {
         APIs.getTodos().then(res=>{
             state.todos = res;
         })
@@ -197,6 +253,7 @@ const ViewModel = ((Model, View) => {
         deleteTodo();
         getTodos();
         editTodo();
+        completeTodos();
         state.subscribe(() => {
             View.renderTodolist(state.todos)
         });
